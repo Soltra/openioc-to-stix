@@ -14,6 +14,7 @@ from stix import utils
 
 # Internal
 from openioc2stix import translate
+from openioc2stix.utils import silence_warnings
 from openioc2stix.version import __version__
 
 
@@ -53,7 +54,7 @@ def get_arg_parser():
     return parser
 
 
-@utils.silence_warnings
+@silence_warnings
 def write_package(package, outfn):
     with open(outfn, "w") as f:
         xml = package.to_xml()

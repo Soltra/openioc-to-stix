@@ -133,7 +133,7 @@ def create_dns_obj(search_string, content_string, condition):
 
     entry = DNSCacheEntry()
     entry.dns_entry = record
-    cache.dns_cache_entry = entry
+    cache.dns_cache_entry.append(entry)
 
     return Object(cache)
 
