@@ -81,6 +81,7 @@ def has_content(object):
 ## primary object functions
 
 def create_disk_obj(search_string, content_string, condition):
+
     from cybox.objects.disk_object import Disk, DiskPartition, PartitionList
 
     disk = Disk()
@@ -106,6 +107,7 @@ def create_disk_obj(search_string, content_string, condition):
     else:
         return None
 
+    disk.type_ = disk.type  # JSA: Hack for old libraries.
     return Object(disk)
 
 def create_dns_obj(search_string, content_string, condition):
@@ -277,7 +279,12 @@ def create_win_event_log_obj(search_string, content_string, condition):
     }
 
     if search_string in attrmap:
-        set_field(eventlog, attrmap[search_string], content_string, condition)
+        try:
+            set_field(eventlog, attrmap[search_string], content_string, condition)
+        except AttributeError:
+            # JSA : Hack for older libraries.
+            if attrmap[search_string] == 'type_':
+                eventlog.type_ = content_string
     elif search_string == "EventLogItem/unformattedMessage/string":
         s = String(xml.sanitize(content_string))
         s.condition = condition
@@ -285,6 +292,8 @@ def create_win_event_log_obj(search_string, content_string, condition):
     else:
         return None
 
+    # JSA: Hack for older libraries.
+    eventlog.type_ = eventlog.type
     return Object(eventlog)
 
 def create_file_obj(search_string, content_string, condition):
