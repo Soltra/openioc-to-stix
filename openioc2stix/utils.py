@@ -1,21 +1,26 @@
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 
-import cybox
 from cybox.common.properties import _LongBase, _IntegerBase, _FloatBase
+
+try:
+    # Old versions of cybox (prior to mixbox) defined this class.
+    from cybox import TypedField
+except ImportError:
+    from mixbox.fields import TypedField
 
 
 NUMERIC_FIELD_BASES = (_LongBase, _IntegerBase, _FloatBase)
 
 
-def normalize_id(id):
+def normalize_id(id_):
     """Normalize any ids used in the IOC to make the compatible with CybOX
     This is just in case the normal UUID type is not used.
     """
-    if id is None:
+    if id_ is None:
         return None
 
-    return id.replace(":", "-")
+    return id_.replace(":", "-")
 
 
 def forcestring(value):
@@ -36,7 +41,7 @@ def partial_match(dict_, key):
     if key in dict_:
         return dict_[key]
 
-    for partial, value in dict_.iteritems():
+    for partial, value in dict_.items():
         if partial in key:
             return value
 
@@ -47,7 +52,7 @@ def is_numeric(obj, attrname):
     klass = obj.__class__
     field = getattr(klass, attrname)
 
-    if not isinstance(field, cybox.TypedField):
+    if not isinstance(field, TypedField):
         return False
 
     if not field.type_:

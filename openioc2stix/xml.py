@@ -1,4 +1,4 @@
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 
 from lxml import etree
@@ -80,7 +80,7 @@ def sanitize(string):
              Otherwise original string is returned.
 
     """
-    if not isinstance(string, basestring):
+    if not isinstance(string, str):
         return string
 
     # Remove CDATA wrapper if it existed.

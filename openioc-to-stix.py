@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 """
 openioc-to-stix: OpenIOC to STIX conversion utility.
@@ -10,6 +10,7 @@ import logging
 import argparse
 
 # python-stix
+from mixbox import idgen, namespaces
 from stix import utils
 
 # Internal
@@ -55,7 +56,7 @@ def get_arg_parser():
 
 @utils.silence_warnings
 def write_package(package, outfn):
-    with open(outfn, "w") as f:
+    with open(outfn, 'wb') as f:
         xml = package.to_xml()
         f.write(xml)
 
@@ -78,7 +79,8 @@ def main():
     # initialize logging
     init_logging(args.verbose)
     # Set the namespace to be used in the STIX Package
-    utils.set_id_namespace({"http://openioc.org/openioc":"openioc"})
+    ns = namespaces.Namespace("http://openioc.org/openioc", "openioc", "")
+    idgen.set_id_namespace(ns)
 
     # Create Observables from binding object
     stix_package = translate.to_stix(args.infile)

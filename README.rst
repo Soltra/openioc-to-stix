@@ -3,6 +3,21 @@ openioc-to-stix
 
 Generates STIX Indicator Output from an OpenIOC v1.0 XML File.
 
+:Source: https://github.com/STIXProject/openioc-to-stix
+:Download: https://pypi.org/project/openioc-to-stix/
+
+|travis badge| |landscape.io badge| |version badge|
+
+.. |travis badge| image:: https://api.travis-ci.org/STIXProject/openioc-to-stix.svg?branch=master
+   :target: https://travis-ci.org/STIXProject/openioc-to-stix
+   :alt: Build Status
+.. |landscape.io badge| image:: https://landscape.io/github/STIXProject/openioc-to-stix/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/STIXProject/openioc-to-stix/master
+   :alt: Code Health
+.. |version badge| image:: https://img.shields.io/pypi/v/openioc-to-stix.svg?maxAge=3600
+   :target: https://pypi.org/project/openioc-to-stix/
+   :alt: Version Badge
+
 
 Overview
 --------
@@ -23,12 +38,13 @@ Cyber Observable eXpression (CybOX), and OpenIOC efforts.
 Requirements
 ------------
 
-* Python 2.7
-* python-stix >= v1.2.0.0 (stable)
-* python-cybox >= 2.1.0.12 (stable)
+* Python 2.6, 2.7, 3.4, 3.5, 3.6
+* mixbox >= v1.0.1
+* python-stix >= v1.2.0.2
+* python-cybox >= 2.1.0.13
 
-**Note:** This script was written and tested with Python 2.7 and may not be
-compatible with other Python versions.
+**NOTE** Version 1.0.1 of openioc-to-stix requires python-stix < 1.2.0.0,
+python-cybox 2.1.0.12, and does not require mixbox.
 
 Installation
 ------------
@@ -36,37 +52,25 @@ Installation
 Extract included files into your directory of choice. Please refer to the
 ``requirements.txt`` file for dependencies.
 
-Install dependencies with pip:
-
-::
+Install dependencies with pip::
 
     $ pip install -r requirements.txt
 
 You can also install **openioc-to-stix** into your ``site-packages`` and ``PATH``
-by using `pip`.
-
-::
+by using `pip`::
 
     $ cd /path/to/cloned/openioc-to-stix/repo/
     $ pip install .
 
-**Warning:** Running ``python setup.py install`` directly may install unstable,
-pre-release versions of python-stix and python-cybox. **THESE WILL NOT WORK WITH
-OPENIOC-TO-STIX.**
-
 Usage
 -----
 
-There are two main command line parameters for this script:
-
-::
+There are two main command line parameters for this script::
 
     -i: the path to the input OpenIOC XML file
     -o: the path to the output STIX XML file
 
-To use the script, run the following command:
-
-::
+To use the script, run the following command::
 
     $ python openioc-to-stix.py -i <OpenIOC XML file> -o <STIX XML file>
 

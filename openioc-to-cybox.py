@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 """
 openioc-to-cybox: OpenIOC to CybOX conversion utility.
@@ -9,6 +9,7 @@ openioc-to-cybox: OpenIOC to CybOX conversion utility.
 import sys
 import argparse
 import logging
+import codecs
 
 # python-cybox
 import cybox.utils
@@ -17,6 +18,9 @@ import cybox.utils
 from openioc2stix import translate
 from openioc2stix.version import __version__
 
+# mixbox
+from mixbox.idgen import set_id_namespace
+from mixbox.namespaces import Namespace
 
 # Module logger.
 LOG = logging.getLogger(__name__)
@@ -27,8 +31,8 @@ EXIT_FAILURE = 1
 
 
 def error(fmt, *args):
-     LOG.error(fmt, *args)
-     sys.exit(EXIT_FAILURE)
+    LOG.error(fmt, *args)
+    sys.exit(EXIT_FAILURE)
 
 
 def get_arg_parser():
@@ -75,13 +79,15 @@ def write_observables(observables, outfn):
     namespaces = {}
     xml = observables.to_xml(namespace_dict=namespaces)
 
-    with open(outfn, 'w') as outfile:
-        outfile.write('<?xml version="1.0" encoding="utf-8"?>\n')
+    with open(outfn, 'wb') as outfile:
         outfile.write(xml)
 
+
 def init_id_namespace():
-    ns = cybox.utils.Namespace(name="http://openioc.org/", prefix="openioc")
-    cybox.utils.set_id_namespace(ns)
+    # setup namespace...
+    short_namespace = "openioc"
+    namespace = Namespace("http://openioc.org/", short_namespace, "")
+    set_id_namespace(namespace)
 
 
 def main():
@@ -105,6 +111,6 @@ def main():
         LOG.exception(ex)
         sys.exit(EXIT_FAILURE)
 
-        
+
 if __name__ == "__main__":
-    main()    
+    main()

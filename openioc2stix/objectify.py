@@ -1,4 +1,4 @@
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 
 # builtin
@@ -71,11 +71,11 @@ def set_field(obj, attrname, value, condition=None):
         return _set_field(obj, attrname, value, condition)
 
 
-def has_content(object):
-    if not hasattr(object, '_fields'):
+def has_content(obj):
+    if not hasattr(obj, '_fields'):
         return False
 
-    return any(x for x in object._fields.itervalues())
+    return any(x for x in obj._fields.values())
 
 
 ## primary object functions
@@ -244,7 +244,7 @@ def create_email_obj(search_string, content_string, condition):
         return Object(email)
 
     email = Object(email)
-    email.add_related(attachment)
+    email.add_related(attachment, "Contains")
 
     return email
 
@@ -409,7 +409,6 @@ def create_library_obj(search_string, content_string, condition):
 
 def create_network_connection_obj(search_string, content_string, condition):
     from cybox.objects.socket_address_object import SocketAddress
-    from cybox.objects.port_object import Port
     from cybox.objects.network_connection_object import (
         NetworkConnection, Layer7Connections
     )
@@ -469,7 +468,7 @@ def create_network_connection_obj(search_string, content_string, condition):
         return None
 
     return Object(net)
-    
+
 def create_net_route_obj(search_string, content_string, condition):
     from cybox.objects.network_route_entry_object import NetworkRouteEntry
     from cybox.objects.address_object import Address
@@ -477,11 +476,11 @@ def create_net_route_obj(search_string, content_string, condition):
     net  = NetworkRouteEntry()
     addr = Address(category=Address.CAT_IPV4)
 
-    addr_keys = {
+    addr_keys = set([
         "RouteEntryItem/Destination",
         "RouteEntryItem/Gateway",
         "RouteEntryItem/Netmask"
-    }
+    ])
 
     attr_map = {
         "RouteEntryItem/Destination": "destination_address",
@@ -656,7 +655,7 @@ def create_registry_obj(search_string, content_string, condition):
     value_attrmap = {
         "RegistryItem/Text": "data",
         "RegistryItem/Value": "data",
-         "RegistryItem/Type": "data_type",
+        "RegistryItem/Type": "data_type",
         "RegistryItem/ValueName": "name"
     }
 
@@ -887,7 +886,7 @@ def create_user_obj(search_string, content_string, condition):
         user_account.group_list = WinGroupList(group)
     else:
         return None
-            
+
     return Object(user_account)
 
 def create_volume_obj(search_string, content_string, condition):
@@ -1226,7 +1225,8 @@ def create_pefile_obj(search_string, content_string, condition):
         exports.exported_functions = funclist
         winexec.exports = exports
         set_field(func, "function_name", content_string, condition)
-    elif search_string == "FileItem/PEInfo/ImportedModules/Module/ImportedFunctions/string" or search_string == "DriverItem/PEInfo/ImportedModules/Module/ImportedFunctions/string":
+    elif search_string in ["FileItem/PEInfo/ImportedModules/Module/ImportedFunctions/string",
+                           "DriverItem/PEInfo/ImportedModules/Module/ImportedFunctions/string"]:
         import_ = PEImport()
         imports = PEImportList(import_)
         func = PEImportedFunction()
@@ -1254,7 +1254,7 @@ def create_pefile_obj(search_string, content_string, condition):
         set_field(header, "characteristics", content_string, condition)
     else:
         return None
-    
+
     return Object(winexec)
 
 def create_win_user_obj(search_string, content_string, condition):
@@ -1289,7 +1289,7 @@ def create_account_obj(search_string, content_string, condition):
         set_field(account, attrmap[search_string], content_string, condition)
     else:
         return None
-    
+
     return Object(account)
 
 

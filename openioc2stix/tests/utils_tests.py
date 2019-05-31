@@ -1,7 +1,10 @@
-# Copyright (c) 2015, The MITRE Corporation. All rights reserved.
+# Copyright (c) 2017, The MITRE Corporation. All rights reserved.
 # See LICENSE.txt for complete terms.
 
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 import cybox
 from cybox.core import Observable, ObservableComposition, Event
@@ -12,21 +15,27 @@ from openioc2stix import utils
 
 
 class MockObject(ObjectProperties):
-    # Class used for testing cybox.TypesField attributes
-    Long  = cybox.TypedField('Long', _LongBase)
-    Int   = cybox.TypedField('Int', _IntegerBase)
-    Float = cybox.TypedField('Float', _FloatBase)
-    Str   = cybox.TypedField('Str', String)
-    Non   = cybox.TypedField('None', None)
+    # Class used for testing TypesField attributes
+    Long  = utils.TypedField('Long', _LongBase)
+    Int   = utils.TypedField('Int', _IntegerBase)
+    Float = utils.TypedField('Float', _FloatBase)
+    Str   = utils.TypedField('Str', String)
+    Non   = utils.TypedField('None', None)
+
 
 class WrongMockObject:
     # Class used for testing wrong attribute types
     def __init__(self, dne):
-        self.dne = dne
+        self._dne = dne
 
     @property
     def dne(self):
-        return self.dne
+        return self._dne
+
+    @dne.setter
+    def dne(self, value):
+        self._dne = value
+
 
 class UtilsTest(unittest.TestCase):
 
@@ -60,7 +69,7 @@ class UtilsTest(unittest.TestCase):
         self.assertIsNone(utils.partial_match(test_dict, no_key))
 
     def test_is_numeric(self):
-        # Check to see if the correct numerical cybox.TypedField is returned by `is_numeric`
+        # Check to see if the correct numerical TypedField is returned by `is_numeric`
 
         # Only true if a numeric TypedField is being checked
         test_object = MockObject()
@@ -99,7 +108,7 @@ class UtilsTest(unittest.TestCase):
         test = Observable()
         obs  = ObservableComposition()
         test.observable_composition = obs
-        test.observable_composition.observables = obs
+        test.observable_composition.observables = [Observable()]
         self.assertFalse(utils.is_empty_observable(test))
 
 if __name__ == "__main__":
