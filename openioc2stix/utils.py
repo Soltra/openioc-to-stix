@@ -67,27 +67,3 @@ def is_empty_observable(o):
         return False
 
     return True
-
-
-try:
-    # For python-stix >= 1.2:
-    from stix.utils import silence_warnings
-except ImportError:
-    # Define it here for python-stix libraries < 1.2
-    import functools
-    import warnings
-
-    def silence_warnings(func):
-        """Function decorator that silences/ignores all Python warnings in the
-        wrapped function.
-        Example:
-            >>> @silence_warnings
-            >>> def foo():
-            >>>     warnings.warn("this will not appear")
-        """
-        @functools.wraps(func)
-        def inner(*args, **kwargs):
-            with warnings.catch_warnings(record=True):
-                warnings.simplefilter('always')
-                return func(*args, **kwargs)
-        return inner
